@@ -1,8 +1,29 @@
 # set working directory
 cd /n/scratch/users/b/bek321/phageIP_PASC/code
 
-# install conda env
-conda env create -f environment.yml
+# install
+conda create -n phipflow -c conda-forge -c bioconda python scipy click numpy pandas scipy xarray statsmodels POT biopython nextflow bioconductor-edger
+conda activate phipflow
+conda install -c bioconda samtools=1.3.1
+pip install git+https://github.com/matsengrp/phippery@1.2.0
+conda install -c conda-forge jags
+# in R
+install.packages('rjags')
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("beer")
+
+curl -fksSL https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.3.1/bowtie-1.3.1-linux-x86_64.zip \
+    --output bowtie-1.3.1-linux-x86_64.zip \
+    && unzip bowtie-1.3.1-linux-x86_64.zip \
+    && (cd ~/lib/bin/ && ln -s ~/lib/bowtie-1.3.1-linux-x86_64/* ./)
+
+curl -fksSL https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2 | tar xj && \
+    cd samtools-1.3.1 && \
+    make all all-htslib && make install install-htslib
+
+conda activate phipflow
+
 
 # link file to data
 fastqLoc=NGS_Phage/BenK/20231004_virscan_demo/
