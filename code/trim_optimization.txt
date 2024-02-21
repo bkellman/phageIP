@@ -9,18 +9,18 @@ for cr in 75 50
 do
         for hd in 25 20 17 15 10 5 0
         do
-                cd /n/scratch/users/b/bek321/phageIP_PASC/data-raw/fastq/
+                cd /n/scratch/users/b/bek321/phageIP/data-raw/fastq/
 
                 for infile in FC_07336_GEN00228373.fastq.gz FC_07336_GEN00228374.fastq.gz FC_07266_GEN00227705.fastq.gz FC_07266_GEN00227706.fastq.gz FC_07266_GEN00227707.fastq.gz FC_07272_GEN00227735.fastq.gz FC_07332_GEN00227897.fastq.gz FC_07332_GEN00227898.fastq.gz
                 do
                         base=$(basename ${infile} .fastq.gz)
-                        trimmomatic SE -threads 2 ${infile} ${base}_1.trim.fastq.gz CROP:${cr} HEADCROP:${hd} SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa:2:30:10 &
+                        trimmomatic SE -threads 2 ${infile} ${base}_1.trim.fastq.gz CROP:${cr} HEADCROP:${hd} SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:/n/scratch/users/b/bek321/phageIP/data-raw/peptide_table/VIR3_clean.adapt.fa:2:30:10 &
                 done
 
                 wait
                 wait
 
-                cd /n/scratch/users/b/bek321/phageIP_PASC/data-final
+                cd /n/scratch/users/b/bek321/phageIP/data-final
 
                 for n in 2 3
                 do
@@ -51,7 +51,7 @@ done
 
 ### trim analysis
 
-cd /n/scratch/users/b/bek321/phageIP_PASC/data-final
+cd /n/scratch/users/b/bek321/phageIP/data-final
 
 
 > R

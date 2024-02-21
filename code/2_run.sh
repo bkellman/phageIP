@@ -3,12 +3,19 @@ srun --pty -p interactive --mem 100G -t 0-10:00 -c 20 /bin/bash
 
 # squeue -u bek321
 
-
-cd /n/scratch/users/b/bek321/phageIP_PASC/data-raw/fastq/
-
-COUNTER=1
+### parameters
+basedir=/n/scratch/users/b/bek321/phageIP/
 cr=50
 hd=25
+SAMPLES=../data-raw/20231219_PASC_samples.trim.csv
+PEP=../data-raw/peptide_table/VIR3_clean.csv
+
+############################
+
+wait
+cd ${basedir}data-raw/fastq/
+
+COUNTER=1
 
 for infile in *.fastq.gz
 do
@@ -16,19 +23,19 @@ do
         trimmomatic SE -threads 2 ${infile} ${base}_1.trim.fastq.gz CROP:${cr} HEADCROP:${hd} SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa:2:30:10 &
 
         COUNTER=$[$COUNTER +1]
-       if (( $COUNTER % 20 == 0 ))           # no need for brackets
+       if (( $COUNTER % 10 == 0 ))           # no need for brackets
         then
             wait
         fi
 done
 
 
-conda activate phipflow
-cd /n/scratch/users/b/bek321/phageIP_PASC/data-final
+conda activate phipflow2
+cd ${basedir}data-final
 
 nextflow run matsengrp/phip-flow -r V1.12  \
-        --sample_table ../data-raw/20231219_PASC_samples.csv \
-        --peptide_table ../data-raw/peptide_table/VIR3_clean.csv \
+        --sample_table $SAMPLES \
+        --peptide_table $PEP \
         --read_length 50 --oligo_tile_length 168 \
         --run_zscore_fit_predict \
         --run_cpm_enr_workflow \
