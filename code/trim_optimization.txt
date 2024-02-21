@@ -1,0 +1,239 @@
+
+rsync -crvau /share/JuelgLabNextSeq/Data/ bek321@transfer.o2.hms.harvard.edu:/n/data2/mgh/ragon/alter/NGS_Phage/BenK/
+
+rsync -crvau sshuser@172.21.65.183:/share/JuelgLabNextSeq/Data/ /n/data2/mgh/ragon/alter/NGS_Phage/BenK/
+
+conda activate phipflow2
+
+for cr in 75 50
+do
+        for hd in 25 20 17 15 10 5 0
+        do
+                cd /n/scratch/users/b/bek321/phageIP_PASC/data-raw/fastq/
+
+                for infile in FC_07336_GEN00228373.fastq.gz FC_07336_GEN00228374.fastq.gz FC_07266_GEN00227705.fastq.gz FC_07266_GEN00227706.fastq.gz FC_07266_GEN00227707.fastq.gz FC_07272_GEN00227735.fastq.gz FC_07332_GEN00227897.fastq.gz FC_07332_GEN00227898.fastq.gz
+                do
+                        base=$(basename ${infile} .fastq.gz)
+                        trimmomatic SE -threads 2 ${infile} ${base}_1.trim.fastq.gz CROP:${cr} HEADCROP:${hd} SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa:2:30:10 &
+                done
+
+                wait
+                wait
+
+                cd /n/scratch/users/b/bek321/phageIP_PASC/data-final
+
+                for n in 2 3
+                do
+                        for readlen in 0 50
+                        do
+                                for olen in 50 168
+                                do
+                                        nextflow run matsengrp/phip-flow -r V1.12  \
+                                                --sample_table ../data-raw/20231219_PASC_samples.DEBUG.trim \
+                                                --peptide_table ../data-raw/peptide_table/VIR3_clean.csv \
+                                                --read_length $readlen --oligo_tile_length $olen \
+                                                --n_mismatches $n \
+                                                --peptide_seq_col Prot \
+                                                --output_wide_csv \
+                                                --sample_grouping_col sample_name \
+                                                --results 20231219_PASC_phipflow_SEARCH2_debug_trim${cr}.${hd}_n${n}_rd${readlen}_pep${olen}_"$(date -I)" \
+                                                -resume
+                                done
+                        done
+                        
+                done
+        done
+done
+
+
+
+
+
+### trim analysis
+
+cd /n/scratch/users/b/bek321/phageIP_PASC/data-final
+
+
+> R
+
+library(dplyr)
+
+files = system('ls 20231219_PASC_phipflow_SEARCH2_debug_*_2024-02-1*/wide_data/data_sample_annotation_table.csv.gz',intern=T)
+tmp=do.call(rbind,lapply(files,function(x) cbind(x,read.csv(gzfile(x)))))
+
+tmp2=tmp %>% 
+        mutate( x = gsub('.*debug_|2024-02-1.*','',x) ) %>%
+        group_by(x) %>% 
+        summarize_at(
+                c("error_rate","average_quality","percent_mapped","percent_peptides_detected","percent_peptides_between_10_and_100"),
+                 list(mean = mean,median=median, sd = sd)) %>% as.data.frame() 
+
+
+
+write.csv(tmp,'performance.all.csv')
+write.csv(tmp2,'performance.csv')
+tmp2 %>% select(x,percent_mapped_median,percent_mapped_sd) %>% arrange(-percent_mapped_median) %>% head(n=20)
+
+
+
+
+
+
+
+
+
+
+########################## old
+
+
+infile=FC_07336_GEN00228373.fastq.gz
+base=$(basename ${infile} .fastq.gz)
+trimmomatic SE -threads 2 ${infile} ${base}_1.trim.fastq.gz CROP:50 SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa:2:30:10 &
+infile=FC_07336_GEN00228374.fastq.gz
+base=$(basename ${infile} .fastq.gz)
+trimmomatic SE -threads 2 ${infile} ${base}_1.trim.fastq.gz CROP:50 SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa:2:30:10 &
+infile=FC_07266_GEN00227705.fastq.gz
+base=$(basename ${infile} .fastq.gz)
+trimmomatic SE -threads 2 ${infile} ${base}_1.trim.fastq.gz CROP:50 SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa:2:30:10 &
+infile=FC_07266_GEN00227706.fastq.gz
+base=$(basename ${infile} .fastq.gz)
+trimmomatic SE -threads 2 ${infile} ${base}_1.trim.fastq.gz CROP:50 SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa:2:30:10 &
+infile=FC_07266_GEN00227707.fastq.gz
+base=$(basename ${infile} .fastq.gz)
+trimmomatic SE -threads 2 ${infile} ${base}_1.trim.fastq.gz CROP:50 SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa:2:30:10 &
+infile=FC_07272_GEN00227735.fastq.gz
+base=$(basename ${infile} .fastq.gz)
+trimmomatic SE -threads 2 ${infile} ${base}_1.trim.fastq.gz CROP:50 SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa:2:30:10 &
+infile=FC_07332_GEN00227897.fastq.gz
+base=$(basename ${infile} .fastq.gz)
+trimmomatic SE -threads 2 ${infile} ${base}_1.trim.fastq.gz CROP:50 SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa:2:30:10 &
+infile=FC_07332_GEN00227898.fastq.gz
+base=$(basename ${infile} .fastq.gz)
+trimmomatic SE -threads 2 ${infile} ${base}_1.trim.fastq.gz CROP:50 SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa:2:30:10 &
+
+conda activate phipflow
+cd /n/scratch/users/b/bek321/phageIP_PASC/data-final
+
+#### no trim
+nextflow run matsengrp/phip-flow -r V1.12  \
+        --sample_table ../data-raw/20231219_PASC_samples.DEBUG.csv \
+        --peptide_table ../data-raw/peptide_table/VIR3_clean.csv \
+        --read_length 50 --peptide_tile_length 168 \
+        --peptide_seq_col Prot \
+        --output_wide_csv \
+        --sample_grouping_col sample_name \
+        --results 20231219_PASC_phipflow_debug_50_168_"$(date -I)" \
+        -resume
+
+
+### trim
+nextflow run matsengrp/phip-flow -r V1.12  \
+        --sample_table ../data-raw/20231219_PASC_samples.DEBUG.trim \
+        --peptide_table ../data-raw/peptide_table/VIR3_clean.csv \
+        --read_length 50 --peptide_tile_length 168 \
+        --peptide_seq_col Prot \
+        --output_wide_csv \
+        --sample_grouping_col sample_name \
+        --results 20231219_PASC_phipflow_debug_trim_50_168_"$(date -I)" \
+        -resume
+
+
+#### no trim
+nextflow run matsengrp/phip-flow -r V1.12  \
+        --sample_table ../data-raw/20231219_PASC_samples.DEBUG.csv \
+        --peptide_table ../data-raw/peptide_table/VIR3_clean.csv \
+        --read_length 0 --peptide_tile_length 168 \
+        --peptide_seq_col Prot \
+        --output_wide_csv \
+        --sample_grouping_col sample_name \
+        --results 20231219_PASC_phipflow_debug_0_168_"$(date -I)" \
+        -resume
+
+
+### trim
+nextflow run matsengrp/phip-flow -r V1.12  \
+        --sample_table ../data-raw/20231219_PASC_samples.DEBUG.trim \
+        --peptide_table ../data-raw/peptide_table/VIR3_clean.csv \
+        --read_length 0 --peptide_tile_length 168 \
+        --peptide_seq_col Prot \
+        --output_wide_csv \
+        --sample_grouping_col sample_name \
+        --results 20231219_PASC_phipflow_debug_trim_0_168_"$(date -I)" \
+        -resume
+
+
+#### no trim
+nextflow run matsengrp/phip-flow -r V1.12  \
+        --sample_table ../data-raw/20231219_PASC_samples.DEBUG.csv \
+        --peptide_table ../data-raw/peptide_table/VIR3_clean.csv \
+        --read_length 0 --peptide_tile_length 50 \
+        --peptide_seq_col Prot \
+        --output_wide_csv \
+        --sample_grouping_col sample_name \
+        --results 20231219_PASC_phipflow_debug_0_50_"$(date -I)" \
+        -resume
+
+
+### trim
+nextflow run matsengrp/phip-flow -r V1.12  \
+        --sample_table ../data-raw/20231219_PASC_samples.DEBUG.trim \
+        --peptide_table ../data-raw/peptide_table/VIR3_clean.csv \
+        --read_length 0 --peptide_tile_length 50 \
+        --peptide_seq_col Prot \
+        --output_wide_csv \
+        --sample_grouping_col sample_name \
+        --results 20231219_PASC_phipflow_debug_trim_0_50_"$(date -I)" \
+        -resume
+
+
+#### no trim
+nextflow run matsengrp/phip-flow -r V1.12  \
+        --sample_table ../data-raw/20231219_PASC_samples.DEBUG.csv \
+        --peptide_table ../data-raw/peptide_table/VIR3_clean.csv \
+        --read_length 50 --peptide_tile_length 50 \
+        --peptide_seq_col Prot \
+        --output_wide_csv \
+        --sample_grouping_col sample_name \
+        --results 20231219_PASC_phipflow_debug_50_50_"$(date -I)" \
+        -resume
+
+
+### trim
+nextflow run matsengrp/phip-flow -r V1.12  \
+        --sample_table ../data-raw/20231219_PASC_samples.DEBUG.trim \
+        --peptide_table ../data-raw/peptide_table/VIR3_clean.csv \
+        --read_length 50 --peptide_tile_length 50 \
+        --peptide_seq_col Prot \
+        --output_wide_csv \
+        --sample_grouping_col sample_name \
+        --results 20231219_PASC_phipflow_debug_trim_50_50_"$(date -I)" \
+        -resume
+
+        # --bowtie_optional_args "--trim5 17" \
+#         --n_mismatches 2 \
+
+#### no trim
+nextflow run matsengrp/phip-flow -r V1.12  \
+        --sample_table ../data-raw/20231219_PASC_samples.DEBUG.csv \
+        --peptide_table ../data-raw/peptide_table/VIR3_clean.csv \
+        --read_length 50 --peptide_tile_length 50 \
+        --n_mismatches 2 \
+        --peptide_seq_col Prot \
+        --output_wide_csv \
+        --sample_grouping_col sample_name \
+        --results 20231219_PASC_phipflow_debug_n2_50_50_"$(date -I)" \
+        -resume
+
+
+### trim
+nextflow run matsengrp/phip-flow -r V1.12  \
+        --sample_table ../data-raw/20231219_PASC_samples.DEBUG.trim \
+        --peptide_table ../data-raw/peptide_table/VIR3_clean.csv \
+        --read_length 50 --peptide_tile_length 50 \
+        --n_mismatches 2 \
+        --peptide_seq_col Prot \
+        --output_wide_csv \
+        --sample_grouping_col sample_name \
+        --results 20231219_PASC_phipflow_debug_trim_n2_50_50_"$(date -I)" \
+        -resume
+
