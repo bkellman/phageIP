@@ -61,6 +61,9 @@ library(dplyr)
 files = system('ls 20231219_PASC_phipflow_SEARCH2_debug_*_2024-02-1*/wide_data/data_sample_annotation_table.csv.gz',intern=T)
 tmp=do.call(rbind,lapply(files,function(x) cbind(x,read.csv(gzfile(x)))))
 
+write.csv(tmp,'performance.all.csv')
+
+
 tmp2=tmp %>% 
         mutate( x = gsub('.*debug_|2024-02-1.*','',x) ) %>%
         group_by(x) %>% 
@@ -70,15 +73,20 @@ tmp2=tmp %>%
 
 
 
-write.csv(tmp,'performance.all.csv')
 write.csv(tmp2,'performance.csv')
 tmp2 %>% select(x,percent_mapped_median,percent_mapped_sd) %>% arrange(-percent_mapped_median) %>% head(n=20)
 
+.*
+###
 
+setwd("C:/Users/benja/OneDrive/Documents/GitHub/phageIP")
 
-
-
-
+r = read.csv('data-final/performance.all.csv') %>% mutate( x = gsub('.*debug_|2024-02-1.*','',x) ) 
+annot = data.frame(do.call(rbind,lapply(strsplit(r$x,'_|\\.'), function(x) as.numeric( gsub('.*[a-z]','',x) ))))
+colnames(annot) = c('crop','headcorp','n_mismatch','readlen','oligotilelen')
+r = cbind(r,annot)
+head(r)
+ggplot(r,aes(x=factor(crop),y=percent_mapped,color=factor(headcorp)))+geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+facet_grid(n_mismatch~readlen+oligotilelen)
 
 
 
