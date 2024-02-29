@@ -1,6 +1,6 @@
 # get files
 
-# rsync -crvau /share/JuelgLabNextSeq/Data/ bek321@transfer.o2.hms.harvard.edu:/n/data2/mgh/ragon/alter/NGS_Phage/BenK/
+# rsync -crvau /share/JuelgLabNextSeq/Data/ bek321@transfer.rc.hms.harvard.edu:/n/data2/mgh/ragon/alter/NGS_Phage/BenK/
 
 # rsync -crvau sshuser@172.21.65.183:/share/JuelgLabNextSeq/Data/ /n/data2/mgh/ragon/alter/NGS_Phage/BenK/
 

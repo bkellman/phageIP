@@ -14,9 +14,9 @@ source activate phipflow2
 
 #conda activate phipflow2
 
-for cr in 75 50
+for cr in 50 75
 do
-        for hd in 25 20 17 15 10 5 0
+        for hd in 25 20 17 15 10 5 0 30 40
         do
                 cd /n/scratch/users/b/bek321/phageIP/data-raw/fastq/
 
@@ -45,7 +45,7 @@ do
                                                 --peptide_seq_col Prot \
                                                 --output_wide_csv \
                                                 --sample_grouping_col sample_name \
-                                                --results 20231219_PASC_phipflow_SEARCH2_debug_trim${cr}.${hd}_n${n}_rd${readlen}_pep${olen}_"$(date -I)" \
+                                                --results 20231219_PASC_phipflow_SEARCH2_debug_trim${cr}.${hd}_n${n}_rd${readlen}_pep${olen} \
                                                 -resume
                                 done
                         done
