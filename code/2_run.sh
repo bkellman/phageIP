@@ -1,4 +1,5 @@
-srun --pty -p interactive --mem 50G -t 0-10:00 -c 20 /bin/bash
+srun --pty -p interactive --mem 10G -t 0-2:00 -c 2 /bin/bash
+srun --pty -p interactive --mem 50G -t 0-2:00 -c 20 /bin/bash
 srun --pty -p interactive --mem 100G -t 0-10:00 -c 20 /bin/bash
 
 # squeue -u bek321

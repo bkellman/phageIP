@@ -55,8 +55,8 @@ done
 
 
 
-
-### trim analysis
+########################
+### collect sample annotation
 
 cd /n/scratch/users/b/bek321/phageIP/data-final
 
@@ -84,7 +84,79 @@ write.csv(tmp2,'performance.csv')
 tmp2 %>% select(x,percent_mapped_median,percent_mapped_sd) %>% arrange(-percent_mapped_median) %>% head(n=20)
 
 
-###
+########################
+#### collect count data
+
+> R
+
+library(dplyr)
+library(reshape2)
+
+# get sample ids
+files = system('ls 20231219_PASC_phipflow_*/wide_data/data_sample_annotation_table.csv.gz',intern=T)
+id=do.call(rbind,lapply(files,function(x) cbind(x,read.csv(gzfile(x)))))
+coln= id[1:8,2:3]
+
+# get optim data
+files = system('ls 20231219_PASC_phipflow_*/wide_data/data_counts.csv.gz',intern=T)
+new=lapply(files,function(i){
+        #cbind(
+        #        param=gsub('.*debug_|\\/.*','',i),
+                dat=read.csv(gzfile(i),row.names=1)
+                colnames(dat) = id[1:8,3]
+                return(dat)
+        #)
+})
+names(new) = gsub('.*debug_|\\/.*','',files)
+
+save(new,file='counts.optim.rds')
+
+#
+library(dplyr)
+library(reshape2)
+load(file='counts.optim.rds')
+
+# get og data
+f = list.files('og_pipeline/raw.data/',pattern='.csv',full.names=T)
+og= do.call(cbind,lapply(f,function(x) read.csv(gzfile(x),row.names=1)))
+colnames(og) = gsub('\\.fastq.*','',gsub('.*_GEN','GEN',f))
+
+# map vir3.fasta to VIR_clean
+vir.fa = seqinr::read.fasta('../data-raw/peptide_table/vir3.fasta')
+vir.csv= read.csv('../data-raw/peptide_table/VIR3_clean.csv')
+mapping=lapply( vir.fa[1:1e4] ,
+        function(x) which(grepl( paste(unlist(x),collapse='') , vir.csv$insert ) )) %>% melt()
+colnames(mapping) = c('fa','csv')
+save(mapping,file='../data-raw/peptide_table/VIR3_vir.mapping.rda')
+
+
+load('../data-raw/peptide_table/VIR3_vir.mapping.rda')
+og2=do.call(rbind, lapply( unique(mapping[,2]) , function(i) colSums(og[i,])/2 ))
+rownames(og2) = as.character(unique(mapping[,2]))
+
+
+sim=list()
+for(i in names(new)){
+
+        rn = intersect(rownames(og2),rownames(new[[i]]))
+        ni = new[[i]][rownames(new[[i]])%in%rn,colnames(og2)] #%>% arrange('row.names')
+        oi = og2[rownames(og2)%in%rn,colnames(og2)] #%>% arrange('row.names')
+
+        if(any(rownames(ni)!=rownames(oi))){stop('mismatch aln')}
+
+        sim[[i]]=sapply( colnames(ni),function(j){
+                cor(sort(ni[,j]),sort(oi[,j]) ,method='spearman')
+        })
+
+}
+tmp=do.call(rbind,sim)
+head(tmp[order(-rowSums(tmp)),])
+write.csv(tmp,'elledge_vs_new.csv')
+
+
+
+########################
+### visualize performance (alignment and sequencing QC)
 
 library(dplyr)
 library(ggplot2)
@@ -104,6 +176,14 @@ melt(r,measure.vars = c('percent_mapped','percent_peptides_detected','percent_pe
     geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
     facet_grid(variable~n_mismatch+readlen+oligotilelen,scales = 'free_y')+
     theme_bw(base_size =15)
+
+
+
+
+
+
+
+
 
 
 ########################## old
