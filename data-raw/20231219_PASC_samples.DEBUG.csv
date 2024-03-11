@@ -1,9 +1,0 @@
-replicate_id,control_status,sample_ID,sample_name,experiment_group,fastq_filepath
-GEN00228373,empirical,CTL_RA.A150553759_D-1,CTL_RA.A150553759,CTL_RA,../data-raw/fastq/FC_07336_GEN00228373.fastq.gz
-GEN00228374,empirical,CTL_RA.A150553759_D-2,CTL_RA.A150553759,CTL_RA,../data-raw/fastq/FC_07336_GEN00228374.fastq.gz
-GEN00227705,beads_only,CONTROL.PBS_D-1,CONTROL.PBS,CONTROL,../data-raw/fastq/FC_07266_GEN00227705.fastq.gz
-GEN00227706,beads_only,CONTROL.PBS_D-2,CONTROL.PBS,CONTROL,../data-raw/fastq/FC_07266_GEN00227706.fastq.gz
-GEN00227707,beads_only,CONTROL.PBS_D-3,CONTROL.PBS,CONTROL,../data-raw/fastq/FC_07266_GEN00227707.fastq.gz
-GEN00227735,library,CONTROL.Input_Library_D-1,CONTROL.Input_Library,CONTROL,../data-raw/fastq/FC_07272_GEN00227735.fastq.gz
-GEN00227895,empirical,CTL_FU.RP-114_D-1,CTL_FU.RP-114,CTL_FU,../data-raw/fastq/FC_07332_GEN00227895.fastq.gz
-GEN00227896,empirical,CTL_FU.RP-114_D-2,CTL_FU.RP-114,CTL_FU,../data-raw/fastq/FC_07332_GEN00227896.fastq.gz

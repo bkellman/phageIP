@@ -1,9 +1,0 @@
-replicate_id,control_status,sample_ID,sample_name,experiment_group,fastq_filepath
-GEN00228373,empirical,CTL_RA.A150553759_D-1,CTL_RA.A150553759,CTL_RA,../data-raw/fastq/FC_07336_GEN00228373_1.trim.fastq.gz
-GEN00228374,empirical,CTL_RA.A150553759_D-2,CTL_RA.A150553759,CTL_RA,../data-raw/fastq/FC_07336_GEN00228374_1.trim.fastq.gz
-GEN00227705,beads_only,CONTROL.PBS_D-1,CONTROL.PBS,CONTROL,../data-raw/fastq/FC_07266_GEN00227705_1.trim.fastq.gz
-GEN00227706,beads_only,CONTROL.PBS_D-2,CONTROL.PBS,CONTROL,../data-raw/fastq/FC_07266_GEN00227706_1.trim.fastq.gz
-GEN00227707,beads_only,CONTROL.PBS_D-3,CONTROL.PBS,CONTROL,../data-raw/fastq/FC_07266_GEN00227707_1.trim.fastq.gz
-GEN00227735,library,CONTROL.Input_Library_D-1,CONTROL.Input_Library,CONTROL,../data-raw/fastq/FC_07272_GEN00227735_1.trim.fastq.gz
-GEN00227897,empirical,CTL_FU.RP-119_D-1,CTL_FU.RP-119,CTL_FU,../data-raw/fastq/FC_07332_GEN00227897_1.trim.fastq.gz
-GEN00227898,empirical,CTL_FU.RP-119_D-2,CTL_FU.RP-119,CTL_FU,../data-raw/fastq/FC_07332_GEN00227898_1.trim.fastq.gz
