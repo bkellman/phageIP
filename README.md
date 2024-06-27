@@ -15,3 +15,9 @@ if (!require("BiocManager", quietly = TRUE))
 
 BiocManager::install("beer")
 ```
+
+# Setup
+
+peptide table:
+- peptide start and end positions (of the peptide coordinates relative to the whole protein) should be integers and named "pos_start" and "pos_end" respectively
+- the peptide amino acid sequence should be under a column named "seq"
