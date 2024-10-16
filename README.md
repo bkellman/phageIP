@@ -23,3 +23,5 @@ peptide table:
 - the peptide amino acid sequence should be under a column named "seq"
 - incomplete information in the "seq" "pos_start" or "pos_end" columns can result in premature termination
 - the "oligo" column must be formatted with flanking sequences as lowercase and insert as uppercase. Given the whole sequence (in excel): `=upper(LEFT(<x>,16))&=MID(<x>,17,LEN(D204454)-2*16)&lower(right(<x>,16))`
+sample table
+- aggregation term cannot include NAs or blank values, instead use "no-value"
