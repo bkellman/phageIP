@@ -34,7 +34,9 @@ BiocManager::install("beer")
 ### Test install
 ```
 conda activate phipflow
-nextflow run matsengrp/phip-flow -r V1.12 -profile docker
+nextflow run matsengrp/phip-flow -r V1.12 \
+    --peptide_table data-raw/phipflow_demo_pan-cov-example/peptide_table.csv \
+    --sample_table data-raw/phipflow_demo_pan-cov-example/sample_table_with_beads_and_lib.csv
 ```
 
 # New run Setup
