@@ -1,11 +1,24 @@
 # Install
 
-### pre-install steps
+### pre-install steps - specific instructions for O2.hms.harvard.edu
+```
+# login to o2
+ssh <username>@o2.hms.harvard.edu
+# start a screen (optional but nice)
+screen -S install
+# inside screen start interactive job (5hr, 20G, 2 cores)
+srun --pty -p interactive --mem 20G -t 0-05:00 -c 2 /bin/bash
+# load conda and git
+module load git
+module load miniconda3
+# clone github
+git clone https://github.com/bkellman/phageIP.git
+```
 
 ### install conda env
 ```
-$conda env create -f environment.yml
-$conda activate phip-flow
+cd phageIP
+conda env create -f environment.yml
 ```
 
 ### install beer (optional)
@@ -18,7 +31,13 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("beer")
 ```
 
-# Setup
+### Test install
+```
+conda activate phipflow
+nextflow run matsengrp/phip-flow -r V1.12 -profile docker
+```
+
+# New run Setup
 
 peptide table:
 - peptide start and end positions (of the peptide coordinates relative to the whole protein) should be integers and named "pos_start" and "pos_end" respectively
