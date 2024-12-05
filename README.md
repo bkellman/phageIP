@@ -11,13 +11,14 @@ srun --pty -p interactive --mem 20G -t 0-05:00 -c 2 /bin/bash
 # load conda and git
 module load git
 module load miniconda3
-# clone github
+# clone github into home directory
+cd ~
 git clone https://github.com/bkellman/phageIP.git
 ```
 
 ### install conda env
 ```
-cd phageIP
+cd ~/phageIP/code
 conda env create -f environment.yml
 ```
 
@@ -33,10 +34,14 @@ BiocManager::install("beer")
 
 ### Test install
 ```
+# start a screen (optional but nice)
+screen -S demo
+# navigate to code repo and run nextflow demo 
+cd ~/phageIP/code
 conda activate phipflow
 nextflow run matsengrp/phip-flow -r V1.12 \
-    --peptide_table data-raw/phipflow_demo_pan-cov-example/peptide_table.csv \
-    --sample_table data-raw/phipflow_demo_pan-cov-example/sample_table_with_beads_and_lib.csv
+    --peptide_table ../data-raw/phipflow_demo_pan-cov-example/peptide_table.csv \
+    --sample_table ../data-raw/phipflow_demo_pan-cov-example/sample_table_with_beads_and_lib.csv
 ```
 
 # New run Setup
