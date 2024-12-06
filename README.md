@@ -29,7 +29,7 @@ git clone https://github.com/bkellman/phageIP.git
 ```
 cd ~/phageIP/code
 conda env create -f environment.yml
-conda install bioconda::bowtie
+conda install bioconda::bowtie=1.3.1
 ```
 
 ### install beer (optional)
