@@ -20,9 +20,6 @@ screen -S install
 srun --pty -p interactive --mem 20G -t 0-05:00 -c 2 /bin/bash
 # load conda and git
 module load git
-module load miniconda3
-# initialize conda
-conda init
 # clone github into home directory
 cd ~
 git clone https://github.com/bkellman/phageIP.git
