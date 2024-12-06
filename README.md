@@ -4,6 +4,16 @@
 ```
 # login to o2
 ssh <username>@o2.hms.harvard.edu
+# load conda and git
+module load git
+module load miniconda3
+# initialize conda
+conda init
+# exit and restart as instructed
+exit
+
+# login to o2 again
+ssh <username>@o2.hms.harvard.edu
 # start a screen (optional but nice)
 screen -S install
 # inside screen start interactive job (5hr, 20G, 2 cores)
@@ -11,6 +21,8 @@ srun --pty -p interactive --mem 20G -t 0-05:00 -c 2 /bin/bash
 # load conda and git
 module load git
 module load miniconda3
+# initialize conda
+conda init
 # clone github into home directory
 cd ~
 git clone https://github.com/bkellman/phageIP.git
@@ -20,6 +32,7 @@ git clone https://github.com/bkellman/phageIP.git
 ```
 cd ~/phageIP/code
 conda env create -f environment.yml
+conda install bioconda::bowtie
 ```
 
 ### install beer (optional)
