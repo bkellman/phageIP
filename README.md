@@ -29,11 +29,11 @@ git clone https://github.com/bkellman/phageIP.git
 ```
 cd ~/phageIP/code
 conda env create -f environment.yml
-conda install bioconda::bowtie=1.3.1
 ```
 
-### install beer (optional)
+### install beer 
 For Bayesian MCMC modeling, beer relies on [rjags]([url](https://cran.r-project.org/web/packages/rjags/index.html)) to interface Just Another Gibbs Sampler ([JAGS]([url](https://mcmc-jags.sourceforge.io/))).
+beer install is manditory, JAGS is not manditory
 ```
 # in R
 if (!require("BiocManager", quietly = TRUE))
