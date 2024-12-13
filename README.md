@@ -63,3 +63,17 @@ peptide table:
 - the "oligo" column must be formatted with flanking sequences as lowercase and insert as uppercase. Given the whole sequence (in excel): `=upper(LEFT(<x>,16))&=MID(<x>,17,LEN(D204454)-2*16)&lower(right(<x>,16))`
 sample table
 - aggregation term cannot include NAs or blank values, instead use "no-value"
+
+# Inputs
+
+Information about origin and properties of peptide:
+![image](https://github.com/user-attachments/assets/41384320-ebed-4b21-ae9e-3573f1a35d94)
+- Organism/species: virus of origin
+- Sequence: amino acid sequence of protein from which peptide is derived 
+- Gene ontology: important properties
+Nucleotide sequence information:
+![image](https://github.com/user-attachments/assets/8ada65d2-2ce0-40ba-a7c9-08ad59e62ebe)
+- id: peptide ID within library
+- divisions of nucleotide sequence: old_oligo, left, right, insert, oligo
+- start & end: first and last amino acid position of the peptide within the protein
+- peptide: AA sequence of peptide within protein sequence
