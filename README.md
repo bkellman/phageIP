@@ -71,6 +71,7 @@ Information about origin and properties of peptide:
 - Organism/species: virus of origin
 - Sequence: amino acid sequence of protein from which peptide is derived 
 - Gene ontology: important properties
+
 Nucleotide sequence information:
 ![image](https://github.com/user-attachments/assets/8ada65d2-2ce0-40ba-a7c9-08ad59e62ebe)
 - id: peptide ID within library
