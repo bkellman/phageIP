@@ -1,6 +1,8 @@
 # phageIP
 
 Welcome to phageIP. This is a wrapper for phipflow, a nextflow pipeline for running virscan/phipseq alignment, quantification, hit-calling (phippery), and sample/group aggregation over organism/sample/species.
+![image](https://github.com/user-attachments/assets/68e21e82-816d-4e46-815b-2d1ec9153ea9)
+
 
 # Install
 
