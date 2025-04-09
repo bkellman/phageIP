@@ -1,49 +1,44 @@
 #!/bin/bash
 #SBATCH -c 20                               # Request one core
-#SBATCH -t 3-00:05                         # Runtime in D-HH:MM format
+#SBATCH -t 03-00:05                         # Runtime in D-HH:MM format
 #SBATCH -p medium                           # Partition to run in
 #SBATCH --mem=100G                         # Memory total in MiB (for all cores)
 #SBATCH -o opt_%j.out                 # File to which STDOUT will be written, including job ID (%j)
 #SBATCH -e opt_%j.err                 # File to which STDERR will be written, including job ID (%j)
                                            # You can change the filenames given with -o and -e to any filenames you'd like
 
-# You can change hostname to any command you would like to run
+#srun --pty -p interactive --mem 20G -t 0-2:00 -c 10 /bin/bash
 
-
+# squeue -u bek321
 
 ### parameters
-basedir=/n/scratch/users/b/bek321/phageIP/
+basedir=/n/scratch/users/<u>/<user>/phageIP/
 cr=50
 hd=25
 SAMPLES=../data-raw/phipflow_demo_pan-cov-example/sample_table_with_beads_and_lib.DEMO.csv
-PEP=../data-raw/peptide_table/VIR3_clean.csv
-
-############################
-
-wait
-cd ${basedir}data-raw/fastq/
+PEP=../data-raw/peptide_table/VIR3_clean_CMVFixed_n_Betacoronavirus1.csv
+adapt=/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa
 
 source /home/${USER}/.bashrc
 source activate phipflow2 
+#conda activate phipflow2 (if running interactive)
 
-COUNTER=1
+############################
 
-for infile in *.fastq.gz
-do
-        base=$(basename ${infile} .fastq.gz)
-        trimmomatic SE -threads 2 ${infile} ${base}.trim.fastq.gz CROP:${cr} HEADCROP:${hd} SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa:2:30:10 &
+# simple run, call hits
+nextflow run matsengrp/phip-flow -r V1.12  \
+        --sample_table $SAMPLES \
+        --peptide_table $PEP \
+        --read_length 50 --oligo_tile_length 168 \
+        --run_zscore_fit_predict true \
+        --run_cpm_enr_workflow true \
+        --summarize_by_organism true \
+        --output_wide_csv true \
+        --output_tall_csv true \
+        --results simple_run_"$(date -I)" \
+        -resume
 
-        COUNTER=$[$COUNTER +1]
-       if (( $COUNTER % 10 == 0 ))           # no need for brackets
-        then
-            wait
-        fi
-done
-
-wait
-
-cd ${basedir}data-final
-
+# simple run, call hits, aggregate organism-specific hits by sample
 nextflow run matsengrp/phip-flow -r V1.12  \
         --sample_table $SAMPLES \
         --peptide_table $PEP \
@@ -55,5 +50,5 @@ nextflow run matsengrp/phip-flow -r V1.12  \
         --output_tall_csv true \
         --peptide_org_col Organism \
         --sample_grouping_col sample_ID \
-        --results phipflow_pan_cov_DEMO_"$(date -I)" \
+        --results simple_run_agg_"$(date -I)" \
         -resume
