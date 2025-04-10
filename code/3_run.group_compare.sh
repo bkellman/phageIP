@@ -14,7 +14,7 @@
 basedir=/n/scratch/users/<u>/<user>/phageIP/
 cr=50
 hd=25
-SAMPLES=../data-raw/phipflow_demo_pan-cov-example/sample_table_with_beads_and_lib.DEMO.csv
+SAMPLES=../data-raw/<SAMPLE_TABLE>.csv
 PEP=../data-raw/peptide_table/VIR3_clean_CMVFixed_n_Betacoronavirus1.csv
 adapt=/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa
 PUBLIC=../data-raw/peptide_tables/public_epitopes_Table_S1_bms.cleanup.csv
