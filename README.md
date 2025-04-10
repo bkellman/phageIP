@@ -1,6 +1,7 @@
 # phageIP
 
 Welcome to phageIP. This is a wrapper for phipflow, a nextflow pipeline for running virscan/phipseq alignment, quantification, hit-calling (phippery), and sample/group aggregation over organism/sample/species.
+
 ![image](https://github.com/user-attachments/assets/68e21e82-816d-4e46-815b-2d1ec9153ea9)
 
 
@@ -79,7 +80,7 @@ Via Ragon Server
 ### 0_Merge_Lanes.sh - Merge Lanes (if needed) and Move samples to data-raw/fastq/
 If individual samples (same sequencing index, same plate) are split across lanes, they need to be merged into a single sample. See example of lane merging in ```code/0_Merge_Lanes.sh```
 
-Copy merged ```fastq.gz``` to ```code/fastq/``` for easy access during run. 
+Copy merged ```fastq.gz``` to ```data-raw/fastq/``` for easy access during run. 
 
 ### 1_prep_sample_table.r - Prepare sample tables 
 Sample table must include:
@@ -89,34 +90,6 @@ Sample table must include:
 4. sample_ID - unique sample identifier, repeated for sample replicates
 
 Sample table may include metadata on samples. Including metadata and study design variables here will carry through to the pipeline output and allow users to perform group comparisons within phipflow using ```sample_grouping_col```
-
-### 2_trim.sh - Trim fastq using trimmomatic to improve alignment
-Trimming samples (cutting reads to a fixed length and removing continuous low-quality bases) improves read alignment
-
-First, edit 2_trim.sh file to direct phipflow to your sample table:
-```
-### parameters
-basedir=/n/scratch/users/<u>/<user>/phageIP/
-cr=50
-hd=25
-SAMPLES=../data-raw/<YOUR SAMPLE TABLE>.csv
-PEP=../data-raw/peptide_table/VIR3_clean_CMVFixed_n_Betacoronavirus1.csv
-adapt=/n/scratch/users/b/bek321/phageIP_PASC/data-raw/peptide_table/VIR3_clean.adapt.fa
-```
-
-Next run 2_trim.sh either in interactive mode or as a batch job.
-
-Interactive mode (will allow you to watch and adjust run in real time)
-```
-screen -S trim
-srun --pty -p interactive --mem 40G -t 0-08:00 -c 20 /bin/bash
-./2_trim.sh
-```
-
-Batch job (see opt_<job_id>.log/.out for output. Check status with squeue -u <user>)
-```
-sbatch 2_trim.sh
-```
 
 ### 2_trim.sh - Trim fastq using trimmomatic to improve alignment
 Trimming samples (cutting reads to a fixed length and removing continuous low-quality bases) improves read alignment
