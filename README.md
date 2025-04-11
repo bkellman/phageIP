@@ -86,7 +86,7 @@ Copy merged ```fastq.gz``` to ```data-raw/fastq/``` for easy access during run.
 Sample table must include:
 1. fastq_filepath - relative path to sample files (minimum 2 replicates per sample)
 2. technical_replicate_id - unique replicate id
-3. control_status - sample type: "library" (library well, no pulldown), "beads_only" (pbs well, library pulldown without serum), "emperical" (sample)
+3. control_status - sample type: "library" (library well, no pulldown), "beads_only" (pbs well, library pulldown without serum), "empirical" (sample)
 4. sample_ID - unique sample identifier, repeated for sample replicates
 
 Sample table may include metadata on samples. Including metadata and study design variables here will carry through to the pipeline output and allow users to perform group comparisons within phipflow using ```sample_grouping_col```
