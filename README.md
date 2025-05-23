@@ -221,18 +221,17 @@ Note unzip .gz files in bash or mac using ```gunzip```, or in Windows using 7zip
     + Annotation
         - data_peptide_annotation_table.csv - detailed annotation for each peptide (rows are dimension matched to peptides)
         - data_sample_annotation_table.csv - detailed annotation for each sample including meta data and QC (rows are dimension matched to samples)
-    + Data
-        - data_sample_annotation_table.csv - detailed annotation for each sample including meta data and QC (rows are dimension matched to samples)  
+    + Sequencing Data
         - data_counts.csv - read counts peptides x samples
         - data_cpm.csv - read counts per million (normalization) peptides x samples
-        - data_edgeR_hits.csv - edgeR called hits peptides x samples
+    + Analysis - Elledge method
+        - data_zscore.csv - enrichment of each peptide measured in z-score divergence from the mockIP/pbs-only
+        - data_enrichment.csv - (I think) foldchange compared to background (mockIP/pbs-only) peptides x samples
+        - data_size_factors.csv - normalization factors used by edgeR, you can ignore this
+    + Analysis - EdgeR method
         - data_edgeR_logfc.csv - edgeR foldchange compared to background (mockIP/pbs-only) peptides x samples
         - data_edgeR_logpval.csv - p-value corresponding to edgeR foldchange compared to background (mockIP/pbs-only) peptides x samples
-        - data_enrichment.csv - (I think) foldchange compared to background (mockIP/pbs-only) peptides x samples
-        - data_peptide_annotation_table.csv - detailed annotation for each peptide (rows are dimension matched to peptides)
-        - data_sample_annotation_table.csv - detailed annotation for each sample including meta data and QC (rows are dimension matched to samples)
-        - data_size_factors.csv - normalization factors used by edgeR, you can ignore this
-        - data_zscore.csv - enrichment of each peptide measured in z-score divergence from the mockIP/pbs-only
+        - data_edgeR_hits.csv - edgeR called hits peptides x samples
 - aggregate_data/ - hits aggregated by species or organism over cancer and 10 random variables you can use to estimate the background
     + ```peptide.ebs.<subject group>_<taxa>.csv.gz ``` - peptides (rows) with peptide specific statistics, used to calculate aggregate statistics
         - peptide - peptide id (defined in ```wide_data/data_peptide_annotation_table.csv```)
