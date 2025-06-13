@@ -9,27 +9,24 @@ __TOC__
 - [phageIP](#phageip)
 - [Install](#install)
     + [pre-install steps - specific instructions for O2.hms.harvard.edu](#pre-install-steps---specific-instructions-for-o2hmsharvardedu)
-    + [install conda env](#install-conda-env)
-    + [install beer](#install-beer)
-    + [Test install](#test-install)
+    + [Create conda environment](#create-conda-environment)
+    + [Install Nextflow](#install-nextflow)
+    + [Configure nextflow](#configure-nextflow)
 - [Run standard virscan](#run-standard-virscan)
-    + [Download phageIP repo](#download-phageip-repo)
     + [Transfer fastq from sequencer to O2](#transfer-fastq-from-sequencer-to-o2)
-    + [0_Merge_Lanes.sh - Merge Lanes (if needed) and Move samples to data-raw/fastq/](#0-merge-lanessh---merge-lanes--if-needed--and-move-samples-to-data-raw-fastq-)
-    + [1_prep_sample_table.r - Prepare sample tables](#1-prep-sample-tabler---prepare-sample-tables)
-    + [2_trim.sh - Trim fastq using trimmomatic to improve alignment](#2-trimsh---trim-fastq-using-trimmomatic-to-improve-alignment)
-    + [3_run.simple.sh & 3_run.group_compare.sh](#3-runsimplesh---3-rungroup-comparesh)
-    + [4_QC_sample.R & 4_QC.all.ipynb](#4-qc-sampler---4-qcallipynb)
+    + [Preparing your metadata file](#preparing-your-metadata-file)
+    + [Running the process](#running-the-process)
+    + [QC](#qc)
 - [Inputs](#inputs)
     + [Input formatting notes](#input-formatting-notes)
 - [Outputs and analysis](#outputs-and-analysis)
     + [Within the output folder, you fill find:](#within-the-output-folder--you-fill-find-)
-    + [For anylizing the data consider](#for-anylizing-the-data-consider)
+    + [For analyzing the data consider](#for-analyzing-the-data-consider)
 
 
 # Install
 
-### Pre-install steps - specific instructions for O2.hms.harvard.edu
+## Pre-install steps - specific instructions for O2.hms.harvard.edu
 
 This section will guide you through the creation of a Conda environment and installation of Nextflow. The Conda environment is used to isolate the required software installations from other potential software you might have associated with your account. Nextflow is used to orchestrate running the pipeline.
 
@@ -40,14 +37,14 @@ This section will guide you through the creation of a Conda environment and inst
     - `java/jdk-21.0.2` is required for Nextflow
 - Clone this repository: `git clone <REPO URL>`
 
-**Create the conda environment**
+### Create conda environment
 - `cd phageIP/conda`
 - `mamba env create -f env.yml` (this will take a while...)
 
 Note that for all intents and purposes `mamba` and `conda` are interchangeable. However, `mamba` will often be *much* faster for locating the required packages and performing installations. After the process is complete, there will be a prompt to "activate" the environment. *You do not need to activate at this time.*
 
 
-**Install nextflow**
+### Install nextflow
 
 You can perform these next steps anywhere, so it doesn't matter where you are located on the filesystem. However, it might be a good idea to just create a temporary directory in your home folder. When you're done, you can delete that temporary folder so you don't have unnecessary clutter.
 
@@ -60,7 +57,7 @@ Make Nextflow executable and move to local path
 
 Now, `nextflow` will be available each time you log-on to O2 since it is located on your `PATH`.
 
-**Configure nextflow**
+### Configure nextflow 
 
 Nextflow is a versatile pipeline tool capable of running jobs on local machines, HPCs (like O2), and even cloud environments such as AWS. To run on these different systems (without changing the nf scripts themselves), we simply have to provide nextflow with an appropriate configuration file. 
 
@@ -128,7 +125,7 @@ The sample table may include additional metadata on samples. Including metadata 
 **About lane merging:**
 If individual samples (same sequencing index, same plate) are split across lanes, they will be merged into a single FASTQ file. This merging is accomplished by grouping on the `sample_ID` and `technical_replicate_ID` variables. If there are >1 FASTQ files associated with each unique combination of `sample_ID` and `technical_replicate_ID` they will be concatenated together.
 
-**Running the process**
+### Running the process
 
 To run everything, we use the `submit.sh` script, which will be submitted via `sbatch`. We require the following arguments (in order!). Always use *absolute* paths so there will be no ambiguity about which files you are using.
 
@@ -148,7 +145,7 @@ sbatch submit.sh \
 ```
 
 
-### 4_QC_sample.R & 4_QC.all.ipynb
+### QC
 
 Simple QC (read counts > 1e6 and mapped percent > 85%) can be run in R with 4_QC_sample.R
 In depth QC can be run with 4_QC.all.ipynb in an R.4.4 kernal
