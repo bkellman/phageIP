@@ -1,0 +1,46 @@
+// This tells nextflow to use conda environments to run the processes 
+// (unless specified otherwise).
+conda.enabled=true
+
+// We use profiles to tell nextflow *how* we would like to run the process
+profiles {
+
+  o2cluster {
+
+    process {
+      // Replace this with the path to your conda environment:
+      conda = '<# PATH TO CONDA ENV #>'
+      executor = 'slurm'
+      queue = 'short'
+
+      // default params unless specified otherwise in the process itself:
+      // Note that the memory is quite large due to the requirements of tools
+      // in the downstream phipflow nextflow process. Unless that code is pulled
+      // into the current repository (where we can explicitly dictate the resources
+      // required for individual steps), we have to give a sufficient amount of
+      // memory for EVERY step in that process.
+      cpus = 1
+      memory = 64.GB
+      time = '2h'
+    }
+
+  }
+
+}
+
+executor {
+  $slurm {
+    queueSize = 1900
+    submitRateLimit = '20 sec'
+  }
+}
+
+// Below, you can modify these constants which affect how trimming, etc. are performed
+params {
+
+  trimmomatic_crop = 50
+  trimmomatic_head_crop = 25
+
+  // Path to a file with adapter sequences. For format, see trimmomatic docs.
+  trimmomatic_adapter_fasta = '<# PATH TO ADAPTER FASTA #>'
+}
