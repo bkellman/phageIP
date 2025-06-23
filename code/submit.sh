@@ -116,6 +116,24 @@ TIMESTAMP=$(date +%m-%d-%Y-%H-%M-%S)
 # the merge/trim/prep process, so we specify here for a single reference:
 OUTPUT_METADATA_NAME="final_metadata.csv"
 
+# Perform some checks to ensure that no one has modified the files
+# and we are running with different parameters, etc.
+
+# Print the current commit hash
+commit_hash=$(git rev-parse HEAD)
+echo "Current git commit hash: $commit_hash"
+
+# Find previously committed files that have changes (modified/deleted, not untracked)
+changed=$(git status --porcelain | grep -v '^??')
+if [[ -z "$changed" ]]; then
+    echo "Previously committed files are clean (no changes detected)."
+else
+    echo "ERROR: There were previously committed files with changes:"
+    echo "$changed"
+    echo "To prevent corruption of the results due to temporary changes, exiting."
+    exit 1
+fi
+
 # Run the pre-pipeline steps, such as lane merging and adapter trimming
 nextflow run main.nf -c $NF_CONFIG \
     -profile o2cluster \
@@ -124,6 +142,9 @@ nextflow run main.nf -c $NF_CONFIG \
     --output_dir $OUTPUT_ROOT_DIRECTORY/$TIMESTAMP \
     -resume
 
+# now that the run directory was created, write the git commit there
+# so that it's completely unambiguous:
+echo $commit_hash > $OUTPUT_ROOT_DIRECTORY/$TIMESTAMP/git_commit.txt
 FINAL_METADATA_PATH=$OUTPUT_ROOT_DIRECTORY/$TIMESTAMP/$OUTPUT_METADATA_NAME
 
 if [[ $RUN_SIMPLE -eq 1 || $RUN_BOTH -eq 1 ]]; then
