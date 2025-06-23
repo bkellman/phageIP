@@ -13,15 +13,20 @@ profiles {
       executor = 'slurm'
       queue = 'short'
 
-      // default params unless specified otherwise in the process itself:
-      // Note that the memory is quite large due to the requirements of tools
-      // in the downstream phipflow nextflow process. Unless that code is pulled
-      // into the current repository (where we can explicitly dictate the resources
-      // required for individual steps), we have to give a sufficient amount of
-      // memory for EVERY step in that process.
+      // default params unless specified otherwise in the process itself:.
       cpus = 1
-      memory = 64.GB
+      memory = 8.GB
       time = '2h'
+
+      withLabel: alignment_tool {
+        cpus = 2
+        memory = 12.GB
+      }
+
+      withName: run_edgeR {
+        cpus = 2
+        memory = 64.GB
+      }
     }
 
   }
