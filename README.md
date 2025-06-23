@@ -127,21 +127,23 @@ If individual samples (same sequencing index, same plate) are split across lanes
 
 ### Running the process
 
-To run everything, we use the `submit.sh` script, which will be submitted via `sbatch`. We require the following arguments (in order!). Always use *absolute* paths so there will be no ambiguity about which files you are using.
+To run everything, we use the `submit.sh` script, which will be submitted via `sbatch`. We require the following arguments. Always use *absolute* paths so there will be no ambiguity about which files you are using.
 
-1. Absolute path to the input metadata file you just prepared
-2. Absolute path to the output directory
-3. Absolute path to the peptide table
-4. (Optional) Path to the Nextflow config you edited earlier. If this is not specified, it will attempt to use `nextflow/phage_ip.config` (assuming it exists). However, it's always a good idea to be explicit and supply the absolute path to this config file.
+1. `-f`: Absolute path to the input metadata file you just prepared
+2. `-o`: Absolute path to the output directory
+3. `-p`: Absolute path to the peptide table
+4. (Optional) `-c`: Path to the Nextflow config you edited earlier. If this is not specified, it will attempt to use `nextflow/phage_ip.config` (assuming it exists). However, it's always a good idea to be explicit and supply the absolute path to this config file.
+5. `-s`, `-g`, or `-b` for "simple", "group", or "both" respectively. The final option `-b` will run both the simple and group style comparisons.
 
-As an example:
+As an example, to perform a "simple" run:
 ```
 cd <PATH TO THE CLONED PHAGEIP REPOSITORY>/code
 sbatch submit.sh \
-    <METADATA FILE> \
-    <OUTPUT DIRECTORY> \
-    <PEPTIDE FILE> \
-    <NEXTFLOW CONFIG FILE>
+    -f <METADATA FILE> \
+    -o <OUTPUT DIRECTORY> \
+    -p <PEPTIDE FILE> \
+    -c <NEXTFLOW CONFIG FILE> \
+    -s 
 ```
 
 
