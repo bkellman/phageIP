@@ -32,8 +32,8 @@ This section will guide you through the creation of a Conda environment and inst
 
 - SSH onto O2
 - Start an interactive session: `srun --pty -p interactive --mem 16G -t 0-02:00 -c 2 /bin/bash`
-- Import a couple modules: `module load miniconda3 java/jdk-21.0.2`
-    - `miniconda3` is required for building the Conda environment
+- Import a couple modules: `module load conda/miniforge3/24.11.3-0 java/jdk-21.0.2`
+    - `conda/miniforge3/24.11.3-0` is required for building the Conda environment
     - `java/jdk-21.0.2` is required for Nextflow
 - Clone this repository: `git clone <REPO URL>`
 

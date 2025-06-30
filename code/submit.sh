@@ -10,6 +10,9 @@
 # Required for nextflow:
 module load java/jdk-21.0.2
 
+# Required so that spawned jobs will be able to activate conda envs:
+module load conda/miniforge3/24.11.3-0
+
 
 usage() {
     echo "Usage: $0 [-s] [-g] [-b] -f filename -o dir -p peptide_table [-c nextflow_config] [-h]"
@@ -135,7 +138,7 @@ else
 fi
 
 # Run the pre-pipeline steps, such as lane merging and adapter trimming
-nextflow run main.nf -c $NF_CONFIG \
+nextflow run nextflow/main.nf -c $NF_CONFIG \
     -profile o2cluster \
     --input_metadata $INPUT_METADATA \
     --final_metadata $OUTPUT_METADATA_NAME \

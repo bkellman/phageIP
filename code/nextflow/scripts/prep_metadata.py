@@ -1,4 +1,5 @@
 import argparse
+import os
 from pathlib import Path
 import sys
 
@@ -69,8 +70,7 @@ def main():
         # `fastq_filepath` entries. To get around that, we construct relative paths
         
         # This is where the fastq will live:
-        target_path = Path(f'{args.output_dir}/{fastq}')
-        relpath = target_path.relative_to(project_dir)
+        relpath = os.path.relpath(f'{args.output_dir}/{fastq}', project_dir)
         df['fastq_filepath'] = relpath
         updated_metadata = pd.concat([updated_metadata, df.drop_duplicates()])
 
