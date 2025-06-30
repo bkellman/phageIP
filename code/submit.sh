@@ -8,7 +8,7 @@
                                            # You can change the filenames given with -o and -e to any filenames you'd like
 
 # Required for nextflow:
-module load java/jdk-21.0.2
+module load java/jdk-23.0.1
 
 # Required so that spawned jobs will be able to activate conda envs:
 module load conda/miniforge3/24.11.3-0
