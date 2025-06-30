@@ -28,12 +28,13 @@ process prep_metadata {
 
     script:
         output_metadata = "${params.final_metadata}"
+        def dir = file("${projectDir}").parent
         """
         python3 ${projectDir}/scripts/prep_metadata.py \
             -f ${input_meta} \
             -o ${output_metadata} \
             -d ${params.output_dir}/${params.trimmed_fastq_dir} \
-            -p ${projectDir}
+            -p ${dir}
         """
 }
 
