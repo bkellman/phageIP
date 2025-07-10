@@ -7,6 +7,8 @@
 #SBATCH -e opt_%j.err                      # File to which STDERR will be written, including job ID (%j)
                                            # You can change the filenames given with -o and -e to any filenames you'd like
 
+set -x
+
 # Required for nextflow:
 module load java/jdk-23.0.1
 
@@ -34,27 +36,28 @@ fi
 
 DEFAULT_NF_CONFIG="nextflow/phage_ip.config"
 
-# TODO: handle this:
-PUBLIC_EPITOPES=""
-
 RUN_SIMPLE=0
 RUN_GROUP=0
 RUN_BOTH=0
+PERMISSIVE=0
 INPUT_METADATA=""
 OUTPUT_ROOT_DIRECTORY=""
 NF_CONFIG=""
 PEP=""
+PUBLIC_EPITOPES=""
 
 echo $NF_CONFIG
-while getopts "sgbf:o:c:p:h" opt; do
+while getopts "sgbxf:o:c:p:e:h" opt; do
     case $opt in
         s) RUN_SIMPLE=1 ;;
         g) RUN_GROUP=1 ;;
         b) RUN_BOTH=1 ;;
+        x) PERMISSIVE=1 ;;
         f) INPUT_METADATA="$OPTARG" ;;
         o) OUTPUT_ROOT_DIRECTORY="$OPTARG" ;;
         c) NF_CONFIG="$OPTARG" ;;
         p) PEP="$OPTARG" ;;
+        e) PUBLIC_EPITOPES="$OPTARG" ;;
         h) usage ;;
         *) usage ;;
     esac
@@ -112,6 +115,24 @@ if [[ -n "$NF_CONFIG" ]]; then
     fi
 fi
 
+# If a group or 'both' run is requested, the input args
+# need to specify a public epitopes file. Assert that we 
+# can reach that file here
+if [[ $RUN_GROUP -eq 1  || $RUN_BOTH -eq 1 ]]; then
+    if [[ -n "$PUBLIC_EPITOPES" ]]; then
+
+        if [[ -f "$PUBLIC_EPITOPES" ]]; then
+            echo "Using public epitopes file: $PUBLIC_EPITOPES"
+        else
+            echo "Error: File '$PUBLIC_EPITOPES' not found. This file is required."
+            exit 1
+        fi
+    else
+        echo "Error: The public epitopes file is required."
+        exit 1 
+    fi
+fi
+
 # Create a timestamp to avoid overwriting
 TIMESTAMP=$(date +%m-%d-%Y-%H-%M-%S)
 
@@ -131,10 +152,16 @@ changed=$(git status --porcelain | grep -v '^??')
 if [[ -z "$changed" ]]; then
     echo "Previously committed files are clean (no changes detected)."
 else
-    echo "ERROR: There were previously committed files with changes:"
-    echo "$changed"
-    echo "To prevent corruption of the results due to temporary changes, exiting."
-    exit 1
+    if [[ $PERMISSIVE -eq 0 ]]; then
+        echo "ERROR: There were previously committed files with changes:"
+        echo "$changed"
+        echo "To prevent corruption of the results due to temporary changes, exiting."
+        echo "If you would like to run WITH these changes, try again using the -x flag"
+        exit 1
+    else
+        echo "WARNING: There are uncommitted changes in your pipeline code, but permissive mode was enabled."
+        echo "$changed"
+    fi
 fi
 
 # Run the pre-pipeline steps, such as lane merging and adapter trimming

@@ -122,6 +122,8 @@ Your metadata/sample table must include (note the column names are case-sensitiv
 
 The sample table may include additional metadata on samples. Including metadata and study design variables here will carry through to the pipeline output and allow users to perform group comparisons within phipflow using `sample_grouping_col`
 
+**Note**: The phip-flow process we are ultimately wrapping requires its own metadata file with *relative* paths to the FASTQ files. The initial steps in the pipeline (in `code/nextflow/main.nf`) handles creation of that compatible metadata file.  
+
 **About lane merging:**
 If individual samples (same sequencing index, same plate) are split across lanes, they will be merged into a single FASTQ file. This merging is accomplished by grouping on the `sample_ID` and `technical_replicate_ID` variables. If there are >1 FASTQ files associated with each unique combination of `sample_ID` and `technical_replicate_ID` they will be concatenated together.
 
@@ -134,6 +136,8 @@ To run everything, we use the `submit.sh` script, which will be submitted via `s
 3. `-p`: Absolute path to the peptide table
 4. (Optional) `-c`: Path to the Nextflow config you edited earlier. If this is not specified, it will attempt to use `nextflow/phage_ip.config` (assuming it exists). However, it's always a good idea to be explicit and supply the absolute path to this config file.
 5. `-s`, `-g`, or `-b` for "simple", "group", or "both" respectively. The final option `-b` will run both the simple and group style comparisons.
+6. (Optional, but dependent) `-e`: If you use the `-g` or `-b` flags, the pipeline will run through a process that requires a file of public epitopes. If that is the case, you MUST specify a path to this file. The process will immediately fail if the file is required, but not given. 
+7. (Optional) `-x`: By default (to prevent runs with unexpected changes) the pipeline will immediately fail if `git` detects that there are uncommitted changes to your files. Use this flag will bypass that guard if you have experimental/uncommitted changes to the code that you would like to use or test. Obviously, once the changes are working properly, it is best practice to commit those changes to the git repository.
 
 As an example, to perform a "simple" run:
 ```
@@ -145,7 +149,7 @@ sbatch submit.sh \
     -c <NEXTFLOW CONFIG FILE> \
     -s 
 ```
-
+(Note: although the example above makes it look like the `-s` flag is missing something, it is not. It's a flag to indicate we want to run the "simple" phip-flow process.)
 
 ### QC
 
