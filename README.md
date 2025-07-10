@@ -136,7 +136,8 @@ To run everything, we use the `submit.sh` script, which will be submitted via `s
 3. `-p`: Absolute path to the peptide table
 4. (Optional) `-c`: Path to the Nextflow config you edited earlier. If this is not specified, it will attempt to use `nextflow/phage_ip.config` (assuming it exists). However, it's always a good idea to be explicit and supply the absolute path to this config file.
 5. `-s`, `-g`, or `-b` for "simple", "group", or "both" respectively. The final option `-b` will run both the simple and group style comparisons.
-6. (Optional) `-x`: By default (to prevent runs with unexpected changes) the pipeline will immediately fail if `git` detects that there are uncommitted changes to your files. Use this flag will bypass that guard if you have experimental/uncommitted changes to the code that you would like to use or test. Obviously, once the changes are working properly, it is best practice to commit those changes to the git repository.
+6. (Optional, but dependent) `-e`: If you use the `-g` or `-b` flags, the pipeline will run through a process that requires a file of public epitopes. If that is the case, you MUST specify a path to this file. The process will immediately fail if the file is required, but not given. 
+7. (Optional) `-x`: By default (to prevent runs with unexpected changes) the pipeline will immediately fail if `git` detects that there are uncommitted changes to your files. Use this flag will bypass that guard if you have experimental/uncommitted changes to the code that you would like to use or test. Obviously, once the changes are working properly, it is best practice to commit those changes to the git repository.
 
 As an example, to perform a "simple" run:
 ```
