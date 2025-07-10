@@ -40,17 +40,19 @@ PUBLIC_EPITOPES=""
 RUN_SIMPLE=0
 RUN_GROUP=0
 RUN_BOTH=0
+PERMISSIVE=0
 INPUT_METADATA=""
 OUTPUT_ROOT_DIRECTORY=""
 NF_CONFIG=""
 PEP=""
 
 echo $NF_CONFIG
-while getopts "sgbf:o:c:p:h" opt; do
+while getopts "sgbxf:o:c:p:h" opt; do
     case $opt in
         s) RUN_SIMPLE=1 ;;
         g) RUN_GROUP=1 ;;
         b) RUN_BOTH=1 ;;
+        x) PERMISSIVE=1 ;;
         f) INPUT_METADATA="$OPTARG" ;;
         o) OUTPUT_ROOT_DIRECTORY="$OPTARG" ;;
         c) NF_CONFIG="$OPTARG" ;;
@@ -131,10 +133,16 @@ changed=$(git status --porcelain | grep -v '^??')
 if [[ -z "$changed" ]]; then
     echo "Previously committed files are clean (no changes detected)."
 else
-    echo "ERROR: There were previously committed files with changes:"
-    echo "$changed"
-    echo "To prevent corruption of the results due to temporary changes, exiting."
-    exit 1
+    if [[ $PERMISSIVE -eq 0 ]]; then
+        echo "ERROR: There were previously committed files with changes:"
+        echo "$changed"
+        echo "To prevent corruption of the results due to temporary changes, exiting."
+        echo "If you would like to run WITH these changes, try again using the -x flag"
+        exit 1
+    else
+        echo "WARNING: There are uncommitted changes in your pipeline code, but permissive mode was enabled."
+        echo "$changed"
+    fi
 fi
 
 # Run the pre-pipeline steps, such as lane merging and adapter trimming
